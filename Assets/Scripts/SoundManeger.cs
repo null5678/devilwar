@@ -16,14 +16,11 @@ public class SoundManeger
     public const string SE_02 = "";
     public const string SE_03 = "";
 
-    private const string EXT = ".mp3";
-
     private enum Type
     {
         BGM,
         SE
     }
-
 
     private AudioSource _souceBgm;
     private AudioSource _souceSe;
