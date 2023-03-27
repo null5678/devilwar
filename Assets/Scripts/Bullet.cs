@@ -10,10 +10,10 @@ public class Bullet : MonoBehaviour
     private float _spped;
     private Rigidbody2D _rdg2d;
 
-    private Vector2 _shotVelo = Vector2.zero;
-    public Vector2 ShotVelo { get; set; } = Vector2.zero;
     public float Damage { get{ return BASE_DAMAGE * DamageMag; } }
     public float DamageMag { get; set; } = 1f;
+
+    private Vector2 _shotVelo = Vector2.zero;
 
     private void Awake()
     {
@@ -27,7 +27,6 @@ public class Bullet : MonoBehaviour
     private void FixedUpdate()
     {
         _rdg2d.AddForce(_shotVelo * _spped);
-        //_rdg2d.AddForce(ShotVelo * _spped);
     }
 
     public void Shot(Vector2 velo)

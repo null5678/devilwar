@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using DG.Tweening;
 
-public class NaviArrow : MonoBehaviour
+public class NaviArrow : GeneralObject
 {
     [SerializeField]
     private Goal _goal;
@@ -45,7 +45,7 @@ public class NaviArrow : MonoBehaviour
         }
 
         _sp.color = Color.white;
-        gameObject.SetActive(true);
+        EnableObject();
     }
 
     public void DisableArrow()
@@ -59,6 +59,6 @@ public class NaviArrow : MonoBehaviour
 
         await UniTask.WaitUntil(() => isfinish);
 
-        DisableArrow();
+        DisableObject();
     }
 }

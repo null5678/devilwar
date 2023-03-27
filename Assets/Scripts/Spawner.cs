@@ -12,38 +12,33 @@ public class Spawner : MonoBehaviour
     [SerializeField]
     private Player _player;
     [SerializeField]
-    private PoolGold _poolGold;
+    private PoolItem _poolItem;
 
     public int MaxEnemy { get; set; } = 10;
     public int SpawnNum { get; set; } = 3;
     public int SpawnWaitSec { get; set; } = 3000;
 
-    private List<GameObject> _listEnemys = new List<GameObject>();
+    private List<Enemy> _listEnemys = new List<Enemy>();
     private CancellationTokenSource _cts;
 
     public async UniTask Init()
     {
         for (int i = 0; i < MaxEnemy; i++)
         {
-            GameObject obj = Instantiate(_enemyPrefab, transform);
-            obj.GetComponent<Enemy>().Player = _player;
-            obj.GetComponent<Enemy>().PoolGold = _poolGold;
+            Enemy e = Instantiate(_enemyPrefab, transform).GetComponent<Enemy>();
+            e.Player = _player;
+            e.PoolItem = _poolItem;
             if(i == 0)
             {
-                obj.GetComponent<Enemy>().EnemyType = Enemy.Type.Navi;
+                e.EnemyType = Enemy.Type.Navi;
             }
             else
             {
-                obj.GetComponent<Enemy>().EnemyType = Enemy.Type.Normal;
+                e.EnemyType = Enemy.Type.Normal;
             }
-            obj.SetActive(false);
-            _listEnemys.Add(obj);
+            e.DisableObject();
+            _listEnemys.Add(e);
         }       
-    }
-
-    public void TitleAnimSpawnStart()
-    {
-        TitleAnimSpawn().Forget();
     }
 
     public async UniTask TitleAnimSpawn()
@@ -59,13 +54,13 @@ public class Spawner : MonoBehaviour
                 int i = 0;
                 foreach (var v in _listEnemys)
                 {
-                    if (!v.activeInHierarchy && v.GetComponent<Enemy>().EnemyType == Enemy.Type.Normal)
+                    if (!v.isActive && v.EnemyType == Enemy.Type.Normal)
                     {
-                        v.GetComponent<Enemy>().Spawn();
-                        v.GetComponent<Enemy>().SpeedMag = 7f;
-                        v.GetComponent<Enemy>().isTitle = true;
-                        v.GetComponent<Enemy>().Velo = Vector3.zero - v.GetComponent<Enemy>().Pos;
-                        v.GetComponent<Enemy>().TitleAnimDeadWait().Forget();
+                        v.Spawn();
+                        v.SpeedMag = 7f;
+                        v.isTitle = true;
+                        v.Velo = Vector3.zero - v.Pos;
+                        v.TitleAnimDeadWait().Forget();
 
                         i++;
                     }
@@ -97,26 +92,26 @@ public class Spawner : MonoBehaviour
                 int i = 0;
                 foreach (var v in _listEnemys)
                 {
-                    if (!v.activeInHierarchy && v.GetComponent<Enemy>().EnemyType == Enemy.Type.Navi)
+                    if (!v.isActive && v.EnemyType == Enemy.Type.Navi)
                     {
                         int r = UnityEngine.Random.Range(1, 10);
                         if (r == 1)
                         {
-                            v.GetComponent<Enemy>().Spawn();
-                            v.GetComponent<Enemy>().SpeedMag = 1f;
+                            v.Spawn();
+                            v.SpeedMag = 1f;
                             i++;
                         }
                     }
-                    else if (!v.activeInHierarchy && v.GetComponent<Enemy>().EnemyType == Enemy.Type.Normal)
+                    else if (!v.isActive && v.EnemyType == Enemy.Type.Normal)
                     {
-                        v.GetComponent<Enemy>().Spawn();
+                        v.Spawn();
                         if(i % 2 == 0)
                         {
-                            v.GetComponent<Enemy>().SpeedMag = 1f;
+                            v.SpeedMag = 1f;
                         }
                         else
                         {
-                            v.GetComponent<Enemy>().SpeedMag = 0.7f;
+                            v.SpeedMag = 0.7f;
                         }
                         i++;
                     }
@@ -141,16 +136,15 @@ public class Spawner : MonoBehaviour
         Enemy ene = null;
         try
         {
-            //await UniTask.Delay(5 * 1000, cancellationToken: cts.Token);
             await UniTask.Delay(3 * 60 * 1000, cancellationToken: cts.Token);
 
             ene = Instantiate(_enemyPrefab, transform).GetComponent<Enemy>();
             ene.Player = _player;
-            ene.PoolGold = _poolGold;
+            ene.PoolItem = _poolItem;
             ene.EnemyType = Enemy.Type.Boss;
             ene.transform.localScale = Vector3.one;
             ene.ChangeBossSp();
-            _listEnemys.Add(ene.gameObject);
+            _listEnemys.Add(ene);
 
             ene.Spawn();
             ene.Hp = 500f;
@@ -159,8 +153,8 @@ public class Spawner : MonoBehaviour
 
             await UniTask.WaitWhile(() => ene is Enemy && ene.gameObject.activeInHierarchy, cancellationToken: cts.Token);
 
-            _listEnemys.Remove(ene.gameObject);
-            Destroy(ene.gameObject);
+            _listEnemys.Remove(ene);
+            ene.RemoveObject();
         }
         catch(OperationCanceledException e)
         {
@@ -172,11 +166,11 @@ public class Spawner : MonoBehaviour
     {
         foreach(var v in _listEnemys)
         {
-            if(v.activeInHierarchy)
+            if(v.isActive)
             {
-                v.GetComponent<Enemy>().Dead(true);
-                v.GetComponent<Enemy>().isTitle = false;
-                v.GetComponent<Enemy>().ReleaseCts();
+                v.Dead(true);
+                v.isTitle = false;
+                v.ReleaseCts();
             }
         }
     }
@@ -195,11 +189,5 @@ public class Spawner : MonoBehaviour
     public void ReleaseCts()
     {
         _cts?.Cancel();
-        //_cts?.Dispose();
-    }
-
-    private void Update()
-    {
-        
     }
 }

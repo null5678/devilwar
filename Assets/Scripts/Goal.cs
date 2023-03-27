@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class Goal : MonoBehaviour
+public class Goal : GeneralObject
 {
     private readonly float DISTANCE = 20f;
 
@@ -18,15 +18,6 @@ public class Goal : MonoBehaviour
 
         transform.position = pos;
 
-        EnableActive();
-    }
-
-    public void EnableActive()
-    {
-        gameObject.SetActive(true);
-    }
-    public void DisableActive()
-    {
-        gameObject.SetActive(false);
+        EnableObject();
     }
 }

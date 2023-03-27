@@ -84,14 +84,9 @@ public class Powerup : MonoBehaviour
     {
         _lvdawnFovBtn.onClick.AddListener(() => btn_event());
     }
+ 
 
-    private void OnDestroy()
-    {
-        // ”jŠü
-        //_lvdawnFovBtn.onClick.RemoveListener
-    }
-
-    public async UniTask BindNeedGold(AsyncReactiveProperty<int> gold, Data.DataType type, CancellationTokenSource cts)
+    public async UniTask BindNeedGold(AsyncReactiveProperty<int> gold, Data.DataType type)
     {
         TextMeshProUGUI tex = null;
         switch(type)
@@ -110,10 +105,10 @@ public class Powerup : MonoBehaviour
         tex.text = gold.Value.ToString();
         gold.BindTo(tex);
 
-        await AsyncNeedGoldTextView(gold, tex, cts);
+        await AsyncNeedGoldTextView(gold, tex);
     }
 
-    private async UniTask AsyncNeedGoldTextView(AsyncReactiveProperty<int> gold, TextMeshProUGUI tex, CancellationTokenSource cts)
+    private async UniTask AsyncNeedGoldTextView(AsyncReactiveProperty<int> gold, TextMeshProUGUI tex)
     {
         await gold.WithoutCurrent().ForEachAsync(n =>
         {
@@ -124,7 +119,7 @@ public class Powerup : MonoBehaviour
         });
     }
 
-    public async UniTask BindLvText(AsyncReactiveProperty<int> lv, Data.DataType type, CancellationTokenSource cts)
+    public async UniTask BindLvText(AsyncReactiveProperty<int> lv, Data.DataType type)
     {
         TextMeshProUGUI tex = null;
         switch(type)
@@ -143,13 +138,10 @@ public class Powerup : MonoBehaviour
         tex.text = lv.Value.ToString();
         lv.BindTo(tex);
 
-        // TODO
-        //CancellationTokenSource.CreateLinkedTokenSource()
-
-        await AsyncLvMaxTextView(lv, tex, cts.Token);
+        await AsyncLvMaxTextView(lv, tex);
     }
 
-    private async UniTask AsyncLvMaxTextView(AsyncReactiveProperty<int> lv, TextMeshProUGUI tex, CancellationToken cts)
+    private async UniTask AsyncLvMaxTextView(AsyncReactiveProperty<int> lv, TextMeshProUGUI tex)
     {
         await lv.WithoutCurrent().ForEachAsync(n =>
         {
@@ -157,7 +149,7 @@ public class Powerup : MonoBehaviour
             {
                 tex.text = MAX_TEXT;
             }
-        }, cts);
+        });
     }
 
     public void EnablePowerup()
@@ -181,7 +173,7 @@ public class Powerup : MonoBehaviour
         _seq2.Restart();
     }
 
-    void Start()
+    private void Start()
     {
         _nextBtn.onClick.AddListener(() => OnNextEvent());
 
@@ -192,18 +184,26 @@ public class Powerup : MonoBehaviour
         _seq1.Append(_tutorial1.DOMoveY(_tutorial1.sizeDelta.y, 40f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart));
         _seq2.Append(_tutorial2.DOMoveY(0f, 0.1f));
         _seq2.Append(_tutorial2.DOMoveY(_tutorial2.sizeDelta.y, 30f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart));
-
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        
+        RemoveEventButtons();
     }
 
     private void OnNextEvent()
     {
         isNext = true;
         DisablePowerup();
+    }
+
+    private void RemoveEventButtons()
+    {
+        _lvupDamageBtn.onClick.RemoveAllListeners();
+        _lvdawnDamageBtn.onClick.RemoveAllListeners();
+        _lvupSpeedBtn.onClick.RemoveAllListeners();
+        _lvdawnSpeedBtn.onClick.RemoveAllListeners();
+        _lvupFovBtn.onClick.RemoveAllListeners();
+        _lvdawnFovBtn.onClick.RemoveAllListeners();
     }
 }

@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class SoundManeger
 {
@@ -55,7 +54,7 @@ public class SoundManeger
 
     public async UniTask BgmPlay(string bgm)
     {
-        if (String.IsNullOrWhiteSpace(bgm)) return;
+        if (string.IsNullOrWhiteSpace(bgm)) return;
 
         var audio = await DownloadAudio(bgm, Type.BGM);
         _souceBgm.clip = audio;
@@ -63,7 +62,7 @@ public class SoundManeger
     }
     public async UniTask SePlay(string se)
     {
-        if (String.IsNullOrWhiteSpace(se)) return;
+        if (string.IsNullOrWhiteSpace(se)) return;
 
         var audio = await DownloadAudio(se, Type.SE);
         _souceSe.PlayOneShot(audio);
@@ -75,7 +74,6 @@ public class SoundManeger
         {
             if (v.name == name)
             {
-                Debug.Log(name + "‚ ‚Á‚½");
                 return v;
             }
         }
@@ -91,19 +89,10 @@ public class SoundManeger
                 break;
         }
 
-        Debug.Log(Application.dataPath + path + name);
-        //var req = UnityWebRequestMultimedia.GetAudioClip(Application.dataPath + path + name + EXT, AudioType.MPEG);
-        //var req = UnityWebRequestMultimedia.GetAudioClip(Application.streamingAssetsPath + path + name + EXT, AudioType.MPEG);
-        //((DownloadHandlerAudioClip)req.downloadHandler).streamAudio = true;
-
-        //await req.SendWebRequest();
-
         ResourceRequest req = Resources.LoadAsync<AudioClip>(path + name);
-        //ResourceRequest req = Resources.LoadAsync<AudioClip>(Application.dataPath + path + name + EXT);
 
         await UniTask.WaitUntil(() => req.isDone);
 
-        //var audio = DownloadHandlerAudioClip.GetContent(req);
         var audio = req.asset as AudioClip;
         audio.name = name;
         _soundList.Add(audio);

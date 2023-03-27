@@ -243,7 +243,6 @@ public class Player : MonoBehaviour
 
         if (collision.tag == "Gold")
         {
-            //_data.AddOwnMoney(100);
             Data.Instance.AddOwnMoney(collision.GetComponent<Gold>().Value * _goldMag);
             collision.GetComponent<Gold>().Pickup();
             SoundManeger.Instance.SePlay(SoundManeger.SE_01).Forget();
@@ -251,7 +250,7 @@ public class Player : MonoBehaviour
         else if(collision.tag == "Navi")
         {
             _navi.EnableArrow(Pos, _fovMag);
-            collision.GetComponent<Gold>().Pickup();
+            collision.GetComponent<Navi>().Pickup();
             SoundManeger.Instance.SePlay(SoundManeger.SE_02).Forget();
         }
         else if(collision.tag == "Goal")

@@ -163,5 +163,11 @@ public class Data : IDisposable
     public void Dispose()
     {
         OwnMoney.Dispose();
+        LvDamage.Dispose();
+        NeedGoldDamgage.Dispose();
+        LvSpeed.Dispose();
+        NeedGoldSpeed.Dispose();
+        LvFov.Dispose();
+        NeedGoldFov.Dispose();
     }
 }

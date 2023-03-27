@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : GeneralObject
 {
     public enum Type
     {
@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour
     private Sprite _sprite;
 
     public Player Player { get; set; }
-    public PoolGold PoolGold { get; set; }
+    public PoolItem PoolItem { get; set; }
     public Type EnemyType { get; set; }
     public Vector3 Pos { get { return transform.position; } }
     public Vector3 Velo { get; set; }
@@ -40,16 +40,6 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         _rgd2d = GetComponent<Rigidbody2D>();    
-    }
-
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
     }
 
     private void FixedUpdate()
@@ -101,20 +91,20 @@ public class Enemy : MonoBehaviour
     {
         gameObject.SetActive(false);
         _isDead = true;
-        //Instantiate(_gold, transform.position, Quaternion.identity);
+
         if (is_goal) return;
 
         if(EnemyType == Type.Normal)
         {
-            PoolGold.GenerateGold(Pos);
+            PoolItem.GenerateGold(Pos);
         }
         else if(EnemyType == Type.Boss)
         {
-            PoolGold.GenerateGoldBoss(Pos);
+            PoolItem.GenerateGoldBoss(Pos);
         }
         else if(EnemyType == Type.Navi)
         {
-            PoolGold.GenerateNavi(Pos);
+            PoolItem.GenerateNavi(Pos);
         }
     }
 

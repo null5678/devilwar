@@ -18,7 +18,7 @@ public class Maneger : MonoBehaviour
     [SerializeField]
     private Data _data;
     [SerializeField]
-    private PoolGold _poolGold;
+    private PoolItem _poolItem;
     [SerializeField]
     private Title _title;
     [SerializeField]
@@ -27,10 +27,6 @@ public class Maneger : MonoBehaviour
     private void Start()
     {
         InitRoutine().Forget();
-    }
-
-    private void Update()
-    {
     }
 
     private async UniTask InitRoutine()
@@ -45,7 +41,7 @@ public class Maneger : MonoBehaviour
 
         _powerup.DisablePowerup();
 
-        _goal.DisableActive();
+        _goal.DisableObject();
 
         await UniTask.WhenAll(_title.TitleRoutine(), _spawner.TitleAnimSpawn());
         _spawner.AllDead();
@@ -53,8 +49,6 @@ public class Maneger : MonoBehaviour
         _player.EnablePlayer();
 
         _title.DisableActive();
-
-        //_spawner.ReleaseCts();
 
         _tutorialObj.SetActive(true);
         MainRoutine().Forget();
@@ -86,7 +80,7 @@ public class Maneger : MonoBehaviour
         }
 
         _tutorialObj.SetActive(false);
-        _poolGold.AllPickup();
+        _poolItem.AllPickup();
         PowerupRoutine().Forget();
 
         cts.Cancel();
@@ -97,11 +91,9 @@ public class Maneger : MonoBehaviour
         if(_player.isDied)
         {
             Data.Instance.ResetLv();
-            //_data.ResetLv();
         }
 
         Data.Instance.PowerupInit();
-        //_data.PowerupInit();
         _powerup.EnablePowerup();
 
         _powerup.PlayAnimTutorial();
@@ -110,7 +102,6 @@ public class Maneger : MonoBehaviour
         _powerup.StopAnimTutorial();
         _powerup.DisablePowerup();
 
-        //_poolGold.AllPickup();
         _goal.isGoal = false;
         _tutorialObj.SetActive(true);
         MainRoutine().Forget();

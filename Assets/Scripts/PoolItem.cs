@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoolGold : MonoBehaviour
+public class PoolItem : MonoBehaviour
 {
     [SerializeField]
     private Gold _gold;
     [SerializeField]
-    private Gold _navi;
+    private Navi _navi;
 
     private List<Gold> _listGold = new List<Gold>();
     private Vector3 _defaultScale = Vector3.zero;
 
-    private Gold _naviObj;
+    private Navi _naviItem;
 
     private void Awake()
     {
@@ -21,7 +21,7 @@ public class PoolGold : MonoBehaviour
 
     public void GenerateGold(Vector3 pos)
     {
-        if(_listGold.Count != 0)
+        if (_listGold.Count != 0)
         {
             foreach (var v in _listGold)
             {
@@ -44,37 +44,37 @@ public class PoolGold : MonoBehaviour
         float rad = 1f;
         float angleDiff = 360f / num;
 
-        for(int i = 0; i < num; i++)
+        for (int i = 0; i < num; i++)
         {
             Vector3 p = Vector3.zero;
             float angle = (90 - angleDiff * i) * Mathf.Deg2Rad;
             p.x = pos.x + (rad * Mathf.Cos(angle));
             p.y = pos.y + (rad * Mathf.Sin(angle));
 
-            InstantiateGold(p, new Vector3(_defaultScale.x * 1.5f, _defaultScale.y * 1.5f,1), 100);
+            InstantiateGold(p, new Vector3(_defaultScale.x * 1.5f, _defaultScale.y * 1.5f, 1), 100);
         }
     }
 
     public void GenerateNavi(Vector3 pos)
     {
-        _naviObj = Instantiate(_navi, pos, Quaternion.identity, transform);
+        _naviItem = Instantiate(_navi, pos, Quaternion.identity, transform);
     }
 
     public void AllPickup()
     {
-        foreach(var v in _listGold)
+        foreach (var v in _listGold)
         {
             v.Pickup();
         }
 
-        _naviObj?.Pickup();
+        _naviItem?.Pickup();
     }
 
     private void InstantiateGold(Vector3 pos, Vector3 scale, int gold_value = 1)
     {
-        var gold = Instantiate(_gold, pos, Quaternion.identity, transform);
-        gold.GetComponent<Gold>().Value = gold_value;
-        gold.GetComponent<Gold>().SetScale(scale);
+        var gold = Instantiate(_gold, pos, Quaternion.identity, transform).GetComponent<Gold>();
+        gold.Value = gold_value;
+        gold.SetScale(scale);
         _listGold.Add(gold);
     }
 }

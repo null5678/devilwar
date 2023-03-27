@@ -19,23 +19,18 @@ public class MainPresenter : MonoBehaviour
     [SerializeField]
     private Title _title;
 
-    private CancellationTokenSource _cts;
-
     // Start is called before the first frame update
     void Start()
     {
-        _cts = new CancellationTokenSource();
-
         Data.Instance.OwnMoney.WithoutCurrent().BindTo(_view.OwnGoldText);
-        //_data.OwnMoney.WithoutCurrent().BindTo(_view.OwnGoldText);
 
-        _powerup.BindLvText(Data.Instance.LvDamage, Data.DataType.Damage, _cts).Forget();
-        _powerup.BindLvText(Data.Instance.LvSpeed, Data.DataType.Speed, _cts).Forget();
-        _powerup.BindLvText(Data.Instance.LvFov, Data.DataType.Fov, _cts).Forget();
+        _powerup.BindLvText(Data.Instance.LvDamage, Data.DataType.Damage).Forget();
+        _powerup.BindLvText(Data.Instance.LvSpeed, Data.DataType.Speed).Forget();
+        _powerup.BindLvText(Data.Instance.LvFov, Data.DataType.Fov).Forget();
 
-        _powerup.BindNeedGold(Data.Instance.NeedGoldDamgage, Data.DataType.Damage, _cts).Forget();
-        _powerup.BindNeedGold(Data.Instance.NeedGoldSpeed, Data.DataType.Speed, _cts).Forget();
-        _powerup.BindNeedGold(Data.Instance.NeedGoldFov, Data.DataType.Fov, _cts).Forget();
+        _powerup.BindNeedGold(Data.Instance.NeedGoldDamgage, Data.DataType.Damage).Forget();
+        _powerup.BindNeedGold(Data.Instance.NeedGoldSpeed, Data.DataType.Speed).Forget();
+        _powerup.BindNeedGold(Data.Instance.NeedGoldFov, Data.DataType.Fov).Forget();
 
         _powerup.OnLvupDamageEvent(() => Data.Instance.DamageLevelup(Data.DataType.Damage));
         _powerup.OnLvdawnDamageEvent(() => Data.Instance.DamageLeveldawn(Data.DataType.Damage));
@@ -49,11 +44,6 @@ public class MainPresenter : MonoBehaviour
 
     private void OnDestroy()
     {
-        _cts.Cancel();
-        _cts.Dispose();
-
-
         Data.Instance.Dispose();
-        //this.GetCancellationTokenOnDestroy
     }
 }
