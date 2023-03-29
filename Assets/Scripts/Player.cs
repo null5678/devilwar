@@ -1,5 +1,5 @@
 using System;
-using System.Linq; // ’²‚×‚é unirx‚à
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     private NaviArrow _navi;
 
     private readonly int MAX_BULLET = 5;
+    private readonly int MAX_HP = 3;
 
     public int Hp { get; set; } = 3;
     public Vector3 Pos { get { return transform.position; } }
@@ -47,7 +48,7 @@ public class Player : MonoBehaviour
     private float _fovMag = 1f;
     private float _damageMag = 1f;
 
-    public async UniTask Init()
+    public void Init()
     {
         _rgd2d = GetComponent<Rigidbody2D>();
         _sp = GetComponent<SpriteRenderer>();
@@ -107,7 +108,7 @@ public class Player : MonoBehaviour
         _fovMag   = data.GetMagData(Data.DataType.Fov);
         _damageMag = data.GetMagData(Data.DataType.Damage);
 
-        Hp = 3;
+        Hp = MAX_HP;
         _hpView.AllEnable();
 
         _sp.color = Color.white;
@@ -216,7 +217,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        catch (OperationCanceledException e)
+        catch
         {
 
         }

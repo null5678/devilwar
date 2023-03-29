@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class SoundManeger
+public class SoundManeger : IDisposable
 {
     public const string BGM_01 = "";
     public const string BGM_02 = "";
@@ -39,7 +39,7 @@ public class SoundManeger
         }
     }
 
-    public async UniTask Init()
+    public void Init()
     {
         var obj = new GameObject("Audio");
         _souceBgm = obj.AddComponent<AudioSource>();
@@ -63,6 +63,11 @@ public class SoundManeger
 
         var audio = await DownloadAudio(se, Type.SE);
         _souceSe.PlayOneShot(audio);
+    }
+
+    public void Dispose()
+    {
+        _soundList.Clear();
     }
 
     private async UniTask<AudioClip> DownloadAudio(string name, Type type)

@@ -4068,7 +4068,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419fea57e36292a4ab02e81001360bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ownGoldText: {fileID: 1253665929}
+  _ownMoneyText: {fileID: 1253665929}
 --- !u!114 &1069310414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4445,7 +4445,7 @@ GameObject:
   - component: {fileID: 1253665930}
   - component: {fileID: 1253665929}
   m_Layer: 5
-  m_Name: OwnGold
+  m_Name: OwnMoney
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -54,11 +54,7 @@ public class Powerup : MonoBehaviour
 
     public bool isNext { get; set; } = false;
 
-    private Sequence _seq1;
-    private Sequence _seq2;
-
-    private Tweener _t1;
-    private Tweener _t2;
+    private Sequence _seqTutorial;
 
     public void OnLvupDamageEvent(Action btn_event)
     {
@@ -84,45 +80,74 @@ public class Powerup : MonoBehaviour
     {
         _lvdawnFovBtn.onClick.AddListener(() => btn_event());
     }
+
+    public void Setup(PowerViewModel p)
+    {
+        BindLvText(p.LvDamage, Data.DataType.Damage);
+        BindLvText(p.LvSpeed, Data.DataType.Speed);
+        BindLvText(p.LvFov, Data.DataType.Fov);
+
+        BindNeedGold(p.NeedGoldDamage, Data.DataType.Damage);
+        BindNeedGold(p.NeedGoldSpeed, Data.DataType.Speed);
+        BindNeedGold(p.NeedGoldFov, Data.DataType.Fov);
+
+        OnLvupDamageEvent(p.LvupDamageEvent);
+        OnLvdawnDamageEvent(p.LvdawnDamageEvent);
+        OnLvupSpeedEvent(p.LvupSpeedEvent);
+        OnLvdawnSpeedEvent(p.LvdawnSpeedEvent);
+        OnLvupFovEvent(p.LvupFovEvent);
+        OnLvdawnFovEvent(p.LvdawnFovEvent);
+    }
  
-
-    public async UniTask BindNeedGold(AsyncReactiveProperty<int> gold, Data.DataType type)
+    public void EnablePowerup()
     {
-        TextMeshProUGUI tex = null;
-        switch(type)
-        {
-            case Data.DataType.Damage:
-                tex = LvDamageNeedGoldText;
-                break;
-            case Data.DataType.Speed:
-                tex = LvSpeedNeedGoldText;
-                break;
-            case Data.DataType.Fov:
-                tex = LvFovNeedGoldText;
-                break;
-        }
-
-        tex.text = gold.Value.ToString();
-        gold.BindTo(tex);
-
-        await AsyncNeedGoldTextView(gold, tex);
+        gameObject.SetActive(true);
+        isNext = false;
+    }
+    public void DisablePowerup()
+    {
+        gameObject.SetActive(false);
     }
 
-    private async UniTask AsyncNeedGoldTextView(AsyncReactiveProperty<int> gold, TextMeshProUGUI tex)
+    public void StopAnimTutorial()
     {
-        await gold.WithoutCurrent().ForEachAsync(n =>
-        {
-            if (n == Data.UN_NEED_GOLD)
-            {
-                tex.text = "";
-            }
-        });
+        _seqTutorial.Pause();
+    }
+    public void PlayAnimTutorial()
+    {
+        _seqTutorial.Restart();
     }
 
-    public async UniTask BindLvText(AsyncReactiveProperty<int> lv, Data.DataType type)
+    private void Start()
+    {
+        _nextBtn.onClick.AddListener(() => OnNextEvent());
+
+        var seq1 = DOTween.Sequence();
+        var seq2 = DOTween.Sequence();
+
+        seq1.Append(_tutorial1.DOMoveY(0f, 0.1f));
+        seq1.Append(_tutorial1.DOMoveY(_tutorial1.sizeDelta.y, 40f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart));
+        seq2.Append(_tutorial2.DOMoveY(0f, 0.1f));
+        seq2.Append(_tutorial2.DOMoveY(_tutorial2.sizeDelta.y, 30f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart));
+
+        _seqTutorial = DOTween.Sequence().Append(seq1).Join(seq2);
+    }
+
+    private void OnDestroy()
+    {
+        RemoveEventButtons();
+    }
+
+    private void OnNextEvent()
+    {
+        isNext = true;
+        DisablePowerup();
+    }
+
+    private void BindLvText(AsyncReactiveProperty<int> lv, Data.DataType type)
     {
         TextMeshProUGUI tex = null;
-        switch(type)
+        switch (type)
         {
             case Data.DataType.Damage:
                 tex = _lvDamageText;
@@ -138,7 +163,7 @@ public class Powerup : MonoBehaviour
         tex.text = lv.Value.ToString();
         lv.BindTo(tex);
 
-        await AsyncLvMaxTextView(lv, tex);
+        AsyncLvMaxTextView(lv, tex).Forget();
     }
 
     private async UniTask AsyncLvMaxTextView(AsyncReactiveProperty<int> lv, TextMeshProUGUI tex)
@@ -152,49 +177,37 @@ public class Powerup : MonoBehaviour
         });
     }
 
-    public void EnablePowerup()
+    private void BindNeedGold(AsyncReactiveProperty<int> gold, Data.DataType type)
     {
-        gameObject.SetActive(true);
-        isNext = false;
-    }
-    public void DisablePowerup()
-    {
-        gameObject.SetActive(false);
-    }
+        TextMeshProUGUI tex = null;
+        switch (type)
+        {
+            case Data.DataType.Damage:
+                tex = LvDamageNeedGoldText;
+                break;
+            case Data.DataType.Speed:
+                tex = LvSpeedNeedGoldText;
+                break;
+            case Data.DataType.Fov:
+                tex = LvFovNeedGoldText;
+                break;
+        }
 
-    public void StopAnimTutorial()
-    {
-        _seq1.Pause();
-        _seq2.Pause();
-    }
-    public void PlayAnimTutorial()
-    {
-        _seq1.Restart();
-        _seq2.Restart();
-    }
+        tex.text = gold.Value.ToString();
+        gold.BindTo(tex);
 
-    private void Start()
-    {
-        _nextBtn.onClick.AddListener(() => OnNextEvent());
-
-        _seq1 = DOTween.Sequence();
-        _seq2 = DOTween.Sequence();
-
-        _seq1.Append(_tutorial1.DOMoveY(0f, 0.1f));
-        _seq1.Append(_tutorial1.DOMoveY(_tutorial1.sizeDelta.y, 40f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart));
-        _seq2.Append(_tutorial2.DOMoveY(0f, 0.1f));
-        _seq2.Append(_tutorial2.DOMoveY(_tutorial2.sizeDelta.y, 30f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart));
+        AsyncNeedGoldTextView(gold, tex).Forget();
     }
 
-    private void OnDestroy()
+    private async UniTask AsyncNeedGoldTextView(AsyncReactiveProperty<int> gold, TextMeshProUGUI tex)
     {
-        RemoveEventButtons();
-    }
-
-    private void OnNextEvent()
-    {
-        isNext = true;
-        DisablePowerup();
+        await gold.WithoutCurrent().ForEachAsync(n =>
+        {
+            if (n == Data.UN_NEED_GOLD)
+            {
+                tex.text = "";
+            }
+        });
     }
 
     private void RemoveEventButtons()

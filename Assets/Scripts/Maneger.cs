@@ -29,12 +29,23 @@ public class Maneger : MonoBehaviour
         InitRoutine().Forget();
     }
 
+    private void OnDestroy()
+    {
+        SoundManeger.Instance.Dispose();
+    }
+
     private async UniTask InitRoutine()
     {
-        await SoundManeger.Instance.Init();
+        SoundManeger.Instance.Init();
 
-        await _player.Init();
-        await _spawner.Init();
+        MainViewModel m = Data.Instance.test();
+        m.TitleBtnEvent = _spawner.ReleaseCts;
+
+        var p = GetComponent<MainPresenter>();
+        p.Setup(m);
+
+        _player.Init();
+        _spawner.Init();
 
         _tutorialObj.SetActive(false);
         SoundManeger.Instance.BgmPlay(SoundManeger.BGM_01).Forget();

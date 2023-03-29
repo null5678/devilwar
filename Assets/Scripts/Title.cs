@@ -32,6 +32,11 @@ public class Title : MonoBehaviour
         BtnEvent.Invoke();
     }
 
+    public void Setup(Action btn_event)
+    {
+        BtnEvent = btn_event;
+    }
+
     public async UniTask TitleRoutine()
     {
         _hpViewObj.SetActive(false);

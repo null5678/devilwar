@@ -21,7 +21,7 @@ public class Spawner : MonoBehaviour
     private List<Enemy> _listEnemys = new List<Enemy>();
     private CancellationTokenSource _cts;
 
-    public async UniTask Init()
+    public void Init()
     {
         for (int i = 0; i < MaxEnemy; i++)
         {
@@ -74,7 +74,7 @@ public class Spawner : MonoBehaviour
                 await UniTask.Delay(SpawnWaitSec);
             }
         }
-        catch (OperationCanceledException e)
+        catch
         {
             _cts.Dispose();
         }
@@ -125,7 +125,7 @@ public class Spawner : MonoBehaviour
                 await UniTask.Delay(SpawnWaitSec);
             }
         }
-        catch (OperationCanceledException e)
+        catch
         {
 
         }
@@ -156,7 +156,7 @@ public class Spawner : MonoBehaviour
             _listEnemys.Remove(ene);
             ene.RemoveObject();
         }
-        catch(OperationCanceledException e)
+        catch
         {
 
         }

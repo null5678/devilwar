@@ -7,17 +7,12 @@ using TMPro;
 public class MainView : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI _ownGoldText;
+    private TextMeshProUGUI _ownMoneyText;
 
-    public TextMeshProUGUI OwnGoldText { get { return _ownGoldText; } }
-
-    void Start()
+    public TextMeshProUGUI OwnMoneyText { get { return _ownMoneyText; } }
+    
+    public void Setup(AsyncReactiveProperty<int> gold)
     {
-        
-    }
-
-    void Update()
-    {
-        
+        gold.WithoutCurrent().BindTo(OwnMoneyText);
     }
 }

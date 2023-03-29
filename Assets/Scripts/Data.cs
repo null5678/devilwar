@@ -54,6 +54,35 @@ public class Data : IDisposable
         NeedGoldFov.Value = _needGold[LvFov.Value - 1];
     }
 
+    public MainViewModel test()
+    {
+
+
+        PowerViewModel p = new PowerViewModel()
+        {
+            LvDamage          = LvDamage,
+            LvSpeed           = LvSpeed,
+            LvFov             = LvFov,
+            NeedGoldDamage    = NeedGoldDamgage,
+            NeedGoldSpeed     = NeedGoldSpeed,
+            NeedGoldFov       = NeedGoldFov,
+            LvupDamageEvent   = () => OnLevelupBtnEvent(DataType.Damage),
+            LvdawnDamageEvent = () => OnLeveldawnBtnEvent(DataType.Damage),
+            LvupSpeedEvent    = () => OnLevelupBtnEvent(DataType.Speed),
+            LvdawnSpeedEvent  = () => OnLeveldawnBtnEvent(DataType.Speed),
+            LvupFovEvent      = () => OnLevelupBtnEvent(DataType.Fov),
+            LvdawnFovEvent    = () => OnLeveldawnBtnEvent(DataType.Fov),
+        };
+
+        MainViewModel m = new MainViewModel()
+        {
+            OwnMoney = OwnMoney,
+            PowerModel = p,
+        };
+
+        return m;
+    }
+
     public void ResetLv()
     {
         LvDamage.Value = 1;
@@ -91,7 +120,7 @@ public class Data : IDisposable
         SoundManeger.Instance.BgmPlay(SoundManeger.BGM_03).Forget();
     }
 
-    public void DamageLevelup(DataType type)
+    public void OnLevelupBtnEvent(DataType type)
     {
         AsyncReactiveProperty<int> lvProperty = null;
         AsyncReactiveProperty<int> needGold = null;
@@ -121,7 +150,7 @@ public class Data : IDisposable
 
         needGold.Value = _needGold[lvProperty.Value - 1];
     }
-    public void DamageLeveldawn(DataType type)
+    public void OnLeveldawnBtnEvent(DataType type)
     {
         AsyncReactiveProperty<int> lvProperty = null;
         AsyncReactiveProperty<int> needGold = null;
