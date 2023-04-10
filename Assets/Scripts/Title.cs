@@ -6,11 +6,13 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UniRx;
+using Devilwar.UI;
 
 public class Title : MonoBehaviour
 {
     [SerializeField]
-    private Button _nextBtn;
+    private MyButton _nextBtn;
     [SerializeField]
     private GameObject _hpViewObj;
     [SerializeField]
@@ -23,7 +25,7 @@ public class Title : MonoBehaviour
 
     private void Awake()
     {
-        _nextBtn.onClick.AddListener(() => OnNextButton());
+        _nextBtn.RegisterTapEvent(OnNextButton);
     }
 
     private void OnNextButton()
